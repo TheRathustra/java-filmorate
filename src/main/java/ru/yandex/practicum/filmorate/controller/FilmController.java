@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
@@ -15,12 +16,12 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@Slf4j
 public class FilmController {
 
-    private final static Logger log = LoggerFactory.getLogger(FilmController.class);
-    private int id = 1;
+    private long id = 1;
 
-    private Map<Integer, Film> films = new HashMap<>();
+    private Map<Long, Film> films = new HashMap<>();
 
     @GetMapping(value = "/films")
     public List<Film> allFilms() {
@@ -28,40 +29,41 @@ public class FilmController {
     }
 
     @PostMapping(value = "/films")
-    public Film create(@Valid @RequestBody Film film) throws ValidationException {
+    public Film create(@Valid @RequestBody Film film) {
 
         if (!isValid(film)) {
-            throw new ValidationException();
+            throw new ValidationException("Фильм с id " + film.getId() + " не прошел валидацию");
         }
 
-        int filmId = film.getId();
-        if (filmId == 0) {
-            film.setId(id);
-            id++;
-        } else {
-            id = film.getId() + 1;
-        }
+        film.setId(id);
+        id++;
 
         films.put(film.getId(), film);
+
+        log.info("Фильм с id " + film.getId() + " добавлен");
+
         return film;
     }
 
     @PutMapping(value = "/films")
-    public Film updateFilm(@Valid @RequestBody Film film) throws ValidationException {
+    public Film updateFilm(@Valid @RequestBody Film film) {
 
         if (!isValid(film)) {
-            throw new ValidationException();
+            throw new ValidationException("Фильм с id " + film.getId() + " не прошел валидацию");
         }
 
         if (films.get(film.getId()) == null) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Фильм с id " + film.getId() + " не найден");
         }
 
         films.put(film.getId(), film);
+
+        log.info("Фильм с id " + film.getId() + " обновлен");
+
         return film;
     }
 
-    private boolean isValid(Film film) {
+    public boolean isValid(Film film) {
 
         boolean valid = true;
         if (film.getDescription().length() > 200) {

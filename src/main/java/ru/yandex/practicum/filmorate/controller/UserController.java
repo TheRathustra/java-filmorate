@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
@@ -13,12 +14,12 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@Slf4j
 public class UserController {
 
-    private final static Logger log = LoggerFactory.getLogger(UserController.class);
-    private int id = 1;
+    private long id = 1;
 
-    private Map<Integer, User> users = new HashMap<>();
+    private Map<Long, User> users = new HashMap<>();
 
     @GetMapping(value ="/users")
     public List<User> allUsers() {
@@ -26,40 +27,41 @@ public class UserController {
     }
 
     @PostMapping(value = "/users")
-    public User create(@Valid @RequestBody User user) throws ValidationException {
+    public User create(@Valid @RequestBody User user) {
 
         if (!isValid(user)) {
-            throw new ValidationException();
+            throw new ValidationException("Пользователь с id " + user.getId() + " не прошел валидацию");
         }
 
-        int userId = user.getId();
-        if (userId == 0) {
-            user.setId(id);
-            id++;
-        } else {
-            id = user.getId() + 1;
-        }
+        user.setId(id);
+        id++;
 
         users.put(user.getId(), user);
+
+        log.info("Пользователь с id " + user.getId() + " добавлен");
+
         return user;
     }
 
     @PutMapping(value ="/users")
-    public User updateUser(@Valid @RequestBody User user) throws ValidationException {
+    public User updateUser(@Valid @RequestBody User user) {
 
         if (!isValid(user)) {
-            throw new ValidationException();
+            throw new ValidationException("Пользователь с id " + user.getId() + " не прошел валидацию");
         }
 
         if (users.get(user.getId()) == null) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Пользователь с id " + user.getId() + " не прошел валидацию");
         }
 
         users.put(user.getId(), user);
+
+        log.info("Пользователь с id " + user.getId() + " обновлен");
+
         return user;
     }
 
-    private boolean isValid(User user) {
+    public boolean isValid(User user) {
 
         boolean valid = true;
         if (user.getLogin().contains(" ")) {
