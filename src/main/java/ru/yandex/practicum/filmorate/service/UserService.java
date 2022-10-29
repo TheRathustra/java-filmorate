@@ -36,10 +36,6 @@ public class UserService {
             throw new ValidationException("Пользователь с id " + user.getId() + " не прошел превалидацию");
         }
 
-        if (userStorage.getUser(user.getId()) == null) {
-            throw new IllegalArgumentException("Пользователь с id " + user.getId() + " не найден");
-        }
-
         return userStorage.add(user);
     }
 

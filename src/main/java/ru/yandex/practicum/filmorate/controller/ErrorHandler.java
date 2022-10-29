@@ -25,7 +25,13 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public Map<String, String> handleRuntimeException(final Throwable e) {
+    public Map<String, String> handleThrowableException(final Throwable e) {
+        return Map.of("error", "Throwable", "errorMessage", e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public Map<String, String> handleRuntimeException(final RuntimeException e) {
         return Map.of("error", "RuntimeException", "errorMessage", e.getMessage());
     }
 
