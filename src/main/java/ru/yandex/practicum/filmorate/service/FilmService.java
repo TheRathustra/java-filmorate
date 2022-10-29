@@ -6,6 +6,7 @@ import ru.yandex.practicum.filmorate.error.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -89,7 +90,7 @@ public class FilmService {
             count = 10;
         }
 
-        List<Film> films = filmStorage.getFilms().stream().sorted((Comparator.comparingInt(o -> o.getLikes().size()))).limit(count).collect(Collectors.toList());
+        List<Film> films = filmStorage.getFilms().stream().sorted(((o1, o2) -> o2.getLikes().size() - o1.getLikes().size())).limit(count).collect(Collectors.toList());
         return films;
     }
 

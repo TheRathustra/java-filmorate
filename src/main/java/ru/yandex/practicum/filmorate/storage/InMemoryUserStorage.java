@@ -6,10 +6,7 @@ import ru.yandex.practicum.filmorate.error.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.ValidationService;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -86,24 +83,29 @@ public class InMemoryUserStorage implements UserStorage {
     @Override
     public void addFriend(User user, long friendId) {
         user.getFriends().add(friendId);
+        User friend = getUser(friendId);
+        friend.getFriends().add(user.getId());
     }
 
     @Override
     public void deleteFriend(User user, long friendId) {
         user.getFriends().remove(friendId);
+        User friend = getUser(friendId);
+        friend.getFriends().remove(user.getId());
     }
 
     @Override
-    public List<Long> getUserFriends(User user) {
-        return new ArrayList<>(user.getFriends());
+    public List<User> getUserFriends(User user) {
+        List<User> friends = user.getFriends().stream().map(this::getUser).collect(Collectors.toList());
+        return friends;
     }
 
     @Override
-    public List<Long> getCommonFriends(User user, User friend) {
+    public List<User> getCommonFriends(User user, User friend) {
 
-        List<Long> userFriends = getUserFriends(user);
-        List<Long> friendFriends = getUserFriends(friend);
-        List<Long> common = userFriends.stream().filter(friendFriends::contains).collect(Collectors.toList());
+        Set<Long> userFriends = user.getFriends();
+        Set<Long> friendFriends = friend.getFriends();
+        List<User> common = userFriends.stream().filter(friendFriends::contains).map(this::getUser).collect(Collectors.toList());
 
         return common;
     }

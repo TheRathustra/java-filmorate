@@ -98,16 +98,17 @@ public class UserService {
         userStorage.deleteFriend(user, friendId);
     }
 
-    public List<Long> getUserFriends(long userId) {
+    public List<User> getUserFriends(long userId) {
         User user = userStorage.getUser(userId);
         if (user == null) {
             log.info("В базе нет пользователя с id " + userId);
             throw new IllegalArgumentException("Пользователь с id " + userId + " не найден");
         }
-        return userStorage.getUserFriends(user);
+        List<User> friends = userStorage.getUserFriends(user);
+        return friends;
     }
 
-    public List<Long> getCommonFriends(long userId, long friendId) {
+    public List<User> getCommonFriends(long userId, long friendId) {
         User user = userStorage.getUser(userId);
         if (user == null) {
             log.info("В базе нет пользователя с id " + userId);
