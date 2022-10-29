@@ -2,9 +2,7 @@ package ru.yandex.practicum.filmorate.storage;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.error.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.service.ValidationService;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -28,9 +26,6 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User add(User user) {
-        if (!ValidationService.isValid(user)) {
-            throw new ValidationException("Пользователь с id " + user.getId() + " не прошел валидацию");
-        }
 
         user.setId(id);
         id++;
@@ -45,14 +40,6 @@ public class InMemoryUserStorage implements UserStorage {
     @Override
     public User update(User user) {
 
-        if (!ValidationService.isValid(user)) {
-            throw new ValidationException("Пользователь с id " + user.getId() + " не прошел валидацию");
-        }
-
-        if (users.get(user.getId()) == null) {
-            throw new IllegalArgumentException("Пользователь с id " + user.getId() + " не прошел валидацию");
-        }
-
         users.put(user.getId(), user);
 
         log.info("Пользователь с id " + user.getId() + " обновлен");
@@ -63,14 +50,6 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User delete(User user) {
-
-        if (!ValidationService.isValid(user)) {
-            throw new ValidationException("Пользователь с id " + user.getId() + " не прошел валидацию");
-        }
-
-        if (users.get(user.getId()) == null) {
-            throw new IllegalArgumentException("Пользователь с id " + user.getId() + " не прошел валидацию");
-        }
 
         User deletedUser = users.remove(user.getId());
 

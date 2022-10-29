@@ -13,7 +13,7 @@ import java.util.List;
 @Slf4j
 public class UserService {
 
-    UserStorage userStorage;
+    private UserStorage userStorage;
 
     public UserService(@Autowired UserStorage userStorage) {
         this.userStorage = userStorage;
@@ -33,7 +33,11 @@ public class UserService {
 
     public User add(User user) {
         if (!ValidationService.isValid(user)) {
-            throw new ValidationException("Пользователь с id " + user.getId() + " не прошел валидацию");
+            throw new ValidationException("Пользователь с id " + user.getId() + " не прошел превалидацию");
+        }
+
+        if (userStorage.getUser(user.getId()) == null) {
+            throw new IllegalArgumentException("Пользователь с id " + user.getId() + " не найден");
         }
 
         return userStorage.add(user);
@@ -42,7 +46,7 @@ public class UserService {
     public User update(User user) {
 
         if (!ValidationService.isValid(user)) {
-            throw new ValidationException("Пользователь с id " + user.getId() + " не прошел валидацию");
+            throw new ValidationException("Пользователь с id " + user.getId() + " не прошел превалидацию");
         }
 
         if (userStorage.getUser(user.getId()) == null) {
@@ -56,7 +60,7 @@ public class UserService {
     public User delete(User user) {
 
         if (!ValidationService.isValid(user)) {
-            throw new ValidationException("Пользователь с id " + user.getId() + " не прошел валидацию");
+            throw new ValidationException("Пользователь с id " + user.getId() + " не прошел превалидацию");
         }
 
         if (userStorage.getUser(user.getId()) == null) {

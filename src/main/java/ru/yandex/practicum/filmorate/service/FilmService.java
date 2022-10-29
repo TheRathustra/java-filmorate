@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 @Service
 public class FilmService {
 
-    FilmStorage filmStorage;
+    private FilmStorage filmStorage;
 
     public FilmService(@Autowired FilmStorage filmStorage) {
         this.filmStorage = filmStorage;
@@ -34,7 +34,7 @@ public class FilmService {
 
     public Film add(Film film) {
         if (!ValidationService.isValid(film)) {
-            throw new ValidationException("Фильм с id " + film.getId() + " не прошел валидацию");
+            throw new ValidationException("Фильм с id " + film.getId() + " не прошел превалидацию");
         }
 
         return filmStorage.add(film);
@@ -43,7 +43,7 @@ public class FilmService {
 
     public Film update(Film film) {
         if (!ValidationService.isValid(film)) {
-            throw new ValidationException("Фильм с id " + film.getId() + " не прошел валидацию");
+            throw new ValidationException("Фильм с id " + film.getId() + " не прошел превалидацию");
         }
 
         if (filmStorage.getFilm(film.getId()) == null) {
@@ -55,7 +55,7 @@ public class FilmService {
 
     public Film delete(Film film) {
         if (!ValidationService.isValid(film)) {
-            throw new ValidationException("Фильм с id " + film.getId() + " не прошел валидацию");
+            throw new ValidationException("Фильм с id " + film.getId() + " не прошел превалидацию");
         }
 
         if (filmStorage.getFilm(film.getId()) == null) {
@@ -90,7 +90,9 @@ public class FilmService {
             count = 10;
         }
 
-        List<Film> films = filmStorage.getFilms().stream().sorted(((o1, o2) -> o2.getLikes().size() - o1.getLikes().size())).limit(count).collect(Collectors.toList());
+        List<Film> films = filmStorage.getFilms().stream()
+                .sorted(((o1, o2) -> o2.getLikes().size() - o1.getLikes().size()))
+                .limit(count).collect(Collectors.toList());
         return films;
     }
 
