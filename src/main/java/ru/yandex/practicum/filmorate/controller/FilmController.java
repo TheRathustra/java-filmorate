@@ -5,10 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
-import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @Slf4j
@@ -21,8 +21,8 @@ public class FilmController {
     }
 
     @GetMapping(value = "/films/{id}")
-    public Film getFilm(@PathVariable long filmId) {
-        return filmService.getFilm(filmId);
+    public Film getFilm(@PathVariable long id) {
+        return filmService.getFilm(id);
     }
 
     @GetMapping(value = "/films")
@@ -46,18 +46,22 @@ public class FilmController {
     }
 
     @PutMapping("/films/{id}/like/{userId}")
-    public void addLike(@PathVariable long filmId, @PathVariable long userId) {
-        filmService.addLike(filmId, userId);
+    public void addLike(@PathVariable long id, @PathVariable long userId) {
+        filmService.addLike(id, userId);
     }
 
     @DeleteMapping("/films/{id}/like/{userId}")
-    public void deleteLike(@PathVariable long filmId, @PathVariable long userId) {
-        filmService.deleteLike(filmId, userId);
+    public void deleteLike(@PathVariable long id, @PathVariable long userId) {
+        filmService.deleteLike(id, userId);
     }
 
     @GetMapping("/films/popular")
-    public List<Film> getPopularFilms(@RequestParam(required = false) int count) {
-        return filmService.getPopularFilms(count);
+    public List<Film> getPopularFilms(@RequestParam(required = false) Optional<Integer> count) {
+        int number = 10;
+        if (count.isPresent()) {
+            number = count.get();
+        }
+        return filmService.getPopularFilms(number);
     }
 
 }

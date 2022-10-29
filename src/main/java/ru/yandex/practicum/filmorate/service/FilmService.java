@@ -20,7 +20,11 @@ public class FilmService {
     }
 
     public Film getFilm(long filmId) {
-        return filmStorage.getFilm(filmId);
+        Film film = filmStorage.getFilm(filmId);
+        if (film == null) {
+            throw new IllegalArgumentException("Фильм с id " + filmId + " не найден");
+        }
+        return film;
     }
 
     public List<Film> getFilms() {
@@ -62,7 +66,7 @@ public class FilmService {
     public void addLike(long filmId, long userId) {
         Film film = filmStorage.getFilm(filmId);
         if (film == null) {
-            throw new IllegalArgumentException("Фильм с id " + film.getId() + " не найден");
+            throw new IllegalArgumentException("Фильм с id " + filmId+ " не найден");
         }
         filmStorage.addLike(film, userId);
     }
@@ -70,8 +74,13 @@ public class FilmService {
     public void deleteLike(long filmId, long userId) {
         Film film = filmStorage.getFilm(filmId);
         if (film == null) {
-            throw new IllegalArgumentException("Фильм с id " + film.getId() + " не найден");
+            throw new IllegalArgumentException("Фильм с id " + filmId + " не найден");
         }
+
+        if (!film.getLikes().contains(userId)) {
+            throw new IllegalArgumentException("у фильма с id " + filmId + " нет лайка от " + userId);
+        }
+
         filmStorage.deleteLike(film, userId);
     }
 
