@@ -1,83 +1,67 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.error.ValidationException;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.UserService;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @Slf4j
 public class UserController {
 
-    private long id = 1;
+   UserService userService;
 
-    private Map<Long, User> users = new HashMap<>();
+    public UserController(@Autowired UserService userService) {
+        this.userService = userService;
+    }
 
+    @GetMapping(value = "/users/{id}")
+    public User getUser(@PathVariable long userId) {
+        return userService.getUser(userId);
+    }
     @GetMapping(value ="/users")
-    public List<User> allUsers() {
-        return new ArrayList<>(users.values());
+    public List<User> getUsers() {
+        return userService.getUsers();
     }
 
     @PostMapping(value = "/users")
     public User create(@Valid @RequestBody User user) {
-
-        if (!isValid(user)) {
-            throw new ValidationException("Пользователь с id " + user.getId() + " не прошел валидацию");
-        }
-
-        user.setId(id);
-        id++;
-
-        users.put(user.getId(), user);
-
-        log.info("Пользователь с id " + user.getId() + " добавлен");
-
-        return user;
+        return userService.add(user);
     }
 
     @PutMapping(value ="/users")
     public User updateUser(@Valid @RequestBody User user) {
-
-        if (!isValid(user)) {
-            throw new ValidationException("Пользователь с id " + user.getId() + " не прошел валидацию");
-        }
-
-        if (users.get(user.getId()) == null) {
-            throw new IllegalArgumentException("Пользователь с id " + user.getId() + " не прошел валидацию");
-        }
-
-        users.put(user.getId(), user);
-
-        log.info("Пользователь с id " + user.getId() + " обновлен");
-
-        return user;
+        return userService.update(user);
     }
 
-    public boolean isValid(User user) {
-
-        boolean valid = true;
-        if (user.getLogin().contains(" ")) {
-            log.info("Логин содержит пробелы", user.getLogin());
-            valid = false;
-        }
-
-        if (user.getName() == null || user.getName().isEmpty()) {
-            user.setName(user.getLogin());
-        }
-
-        if (user.getName().isEmpty()) {
-            log.info("Не заполнено имя", user.getName());
-            valid = false;
-        }
-
-        return valid;
+    @DeleteMapping(value ="/users")
+    public User deleteUser(@Valid @RequestBody User user) {
+        return userService.delete(user);
     }
+
+    @PutMapping("/users/{id}/friends/{friendId}")
+    public void addFriend(@PathVariable long userId, @PathVariable long friendId) {
+        userService.addFriend(userId, friendId);
+    }
+
+    @DeleteMapping("/users/{id}/friends/{friendId}")
+    public void deleteFriend(@PathVariable long userId, @PathVariable long friendId) {
+        userService.deleteFriend(userId, friendId);
+    }
+
+    @GetMapping("/users/{id}/friends")
+    public List<Long> getUserFriends(@PathVariable long userId) {
+        return userService.getUserFriends(userId);
+    }
+    @GetMapping("/users/{id}/friends/common/{otherId}")
+    public List<Long> getCommonFriends(@PathVariable long userId, @PathVariable long friendId) {
+        return userService.getCommonFriends(userId, friendId);
+    }
+
 }
