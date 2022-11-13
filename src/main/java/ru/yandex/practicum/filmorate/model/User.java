@@ -6,16 +6,19 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Past;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 public class User {
 
-    long id;
+    private long id;
     @Email
-    String email;
+    private String email;
     @NotEmpty
-    String login;
-    String name;
+    private String login;
+    private String name;
     @Past
-    LocalDate birthday;
+    private LocalDate birthday;
+    private Set<Long> friends = new HashSet<>();
 }
