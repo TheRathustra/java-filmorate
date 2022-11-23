@@ -1,22 +1,20 @@
 package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.error.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class FilmService {
 
     private FilmStorage filmStorage;
 
-    public FilmService(@Autowired FilmStorage filmStorage) {
+    public FilmService(@Qualifier("inMemoryFilmStorage") @Autowired FilmStorage filmStorage) {
         this.filmStorage = filmStorage;
     }
 
@@ -73,7 +71,7 @@ public class FilmService {
     }
 
     public void deleteLike(long filmId, long userId) {
-        Film film = filmStorage.getFilm(filmId);
+      /*  Film film = filmStorage.getFilm(filmId);
         if (film == null) {
             throw new IllegalArgumentException("Фильм с id " + filmId + " не найден");
         }
@@ -82,18 +80,19 @@ public class FilmService {
             throw new IllegalArgumentException("у фильма с id " + filmId + " нет лайка от " + userId);
         }
 
-        filmStorage.deleteLike(film, userId);
+        filmStorage.deleteLike(film, userId);*/
     }
 
     public List<Film> getPopularFilms(int count) {
-        if (count <= 0) {
+        /*if (count <= 0) {
             count = 10;
         }
 
         List<Film> films = filmStorage.getFilms().stream()
                 .sorted(((o1, o2) -> o2.getLikes().size() - o1.getLikes().size()))
                 .limit(count).collect(Collectors.toList());
-        return films;
+        return films;*/
+        return null;
     }
 
 }
