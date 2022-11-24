@@ -1,15 +1,18 @@
-/*
+
 INSERT INTO MPA (name) VALUES ('G');
 INSERT INTO MPA (name) VALUES ('PG');
 INSERT INTO MPA (name) VALUES ('PG-13');
 INSERT INTO MPA (name) VALUES ('R');
 INSERT INTO MPA (name) VALUES ('NC-17');
 
-INSERT INTO genre (name) VALUES ('comedy');
-INSERT INTO genre (name) VALUES ('detective');
-INSERT INTO genre (name) VALUES ('thriller');
-INSERT INTO genre (name) VALUES ('action');
+INSERT INTO genre (name) VALUES ('Комедия');
+INSERT INTO genre (name) VALUES ('Драма');
+INSERT INTO genre (name) VALUES ('Мультфильм');
+INSERT INTO genre (name) VALUES ('Триллер');
+INSERT INTO genre (name) VALUES ('Документальный');
+INSERT INTO genre (name) VALUES ('Боевик');
 
+/*
 INSERT INTO film (name, description, releaseDate, duration, MPA) VALUES ('The Gentlemen', 'description', '2019-01-01', 2, 4);
 INSERT INTO film (name, description, releaseDate, duration, MPA) VALUES ('Lock, Stock and Two Smoking Barrels', 'description', '1998-01-01', 2, 4);
 INSERT INTO film (name, description, releaseDate, duration, MPA) VALUES ('Snatch', 'description', '2000-01-01', 1, 5);

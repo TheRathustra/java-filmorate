@@ -1,15 +1,11 @@
 package ru.yandex.practicum.filmorate.model;
 
-public enum MPA {
+import lombok.Data;
 
-    G ("G"),
-    PG("PG"),
-    PG13("PG-13"),
-    R("R"),
-    NC17("NC-17");
+@Data
+public class MPA {
 
+    private Integer id;
     private String name;
-    MPA(String name) {
-        this.name = name;
-    }
+
 }

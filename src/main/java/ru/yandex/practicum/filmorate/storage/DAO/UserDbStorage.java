@@ -77,9 +77,6 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public List<User> getUserFriends(User user) {
-        /*String sqlQuery = "select USER_ID from FRIENDS where USER_ID in (\n" +
-                "    select FRIEND_ID from  FRIENDS where USER_ID = ?\n" +
-                "    ) and FRIEND_ID = ?;";*/
         String sqlQuery = "Select * From users where id in (\n" +
                 "select FRIEND_ID from FRIENDS where USER_ID = ?)";
         return jdbcTemplate.query(sqlQuery, new Object[]{user.getId()}, new BeanPropertyRowMapper<>(User.class));
