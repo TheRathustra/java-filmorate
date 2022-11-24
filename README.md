@@ -1,6 +1,7 @@
 # java-filmorate
 Template repository for Filmorate project.
 # Схема связей таблиц
+
 ![схема](схема.png)
 
 # Пояснение к таблицам
