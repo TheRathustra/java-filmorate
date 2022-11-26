@@ -1,5 +1,4 @@
 
-/*
 INSERT INTO MPA (name) VALUES ('G');
 INSERT INTO MPA (name) VALUES ('PG');
 INSERT INTO MPA (name) VALUES ('PG-13');
@@ -13,6 +12,7 @@ INSERT INTO genre (name) VALUES ('Триллер');
 INSERT INTO genre (name) VALUES ('Документальный');
 INSERT INTO genre (name) VALUES ('Боевик');
 
+/*
 INSERT INTO film (name, description, releaseDate, duration, MPA) VALUES ('The Gentlemen', 'description', '2019-01-01', 2, 4);
 INSERT INTO film (name, description, releaseDate, duration, MPA) VALUES ('Lock, Stock and Two Smoking Barrels', 'description', '1998-01-01', 2, 4);
 INSERT INTO film (name, description, releaseDate, duration, MPA) VALUES ('Snatch', 'description', '2000-01-01', 1, 5);
