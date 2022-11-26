@@ -52,4 +52,5 @@ INSERT INTO friends (user_id, friend_id) VALUES (1, 5);
 INSERT INTO friends (user_id, friend_id) VALUES (5, 2);
 INSERT INTO friends (user_id, friend_id) VALUES (2, 4);
 INSERT INTO friends (user_id, friend_id) VALUES (3, 4);
-*/
+
+ */
