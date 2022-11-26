@@ -25,6 +25,8 @@ INSERT INTO users (email, login, name, birthday) VALUES ('user4@yandex.ru', 'use
 INSERT INTO users (email, login, name, birthday) VALUES ('user5@yandex.ru', 'user5_login', 'user5', '2015-01-01');
 
 /*
+Значения для локальных тестов
+
 INSERT INTO film_genre (film_id, genre_id) VALUES (1, 1);
 INSERT INTO film_genre (film_id, genre_id) VALUES (1, 4);
 INSERT INTO film_genre (film_id, genre_id) VALUES (2, 1);
