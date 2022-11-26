@@ -1,4 +1,5 @@
 
+/*
 INSERT INTO MPA (name) VALUES ('G');
 INSERT INTO MPA (name) VALUES ('PG');
 INSERT INTO MPA (name) VALUES ('PG-13');
@@ -24,7 +25,6 @@ INSERT INTO users (email, login, name, birthday) VALUES ('user3@yandex.ru', 'use
 INSERT INTO users (email, login, name, birthday) VALUES ('user4@yandex.ru', 'user4_login', 'user4', '2010-01-01');
 INSERT INTO users (email, login, name, birthday) VALUES ('user5@yandex.ru', 'user5_login', 'user5', '2015-01-01');
 
-/*
 Значения для локальных тестов
 
 INSERT INTO film_genre (film_id, genre_id) VALUES (1, 1);
