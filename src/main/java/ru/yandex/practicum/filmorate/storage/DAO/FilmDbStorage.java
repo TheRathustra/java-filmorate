@@ -62,8 +62,6 @@ public class FilmDbStorage implements FilmStorage {
                 "left join MPA M on M.ID = f.MPA";
         List<Film> films = jdbcTemplate.query(sqlQuery, new FilmMapper());
 
-        String sqlQueryLikes = "SELECT * FROM USERS WHERE ID IN(\n" +
-                "select USER_ID from LIKES WHERE FILM_ID=?)";
         String sqlQueryGenres = "SELECT * FROM GENRE WHERE ID IN (\n" +
                 "SELECT GENRE_ID FROM FILM_GENRE where  FILM_ID = ?);\n" +
                 "\n";
