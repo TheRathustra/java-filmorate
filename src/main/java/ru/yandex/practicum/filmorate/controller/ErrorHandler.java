@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.yandex.practicum.filmorate.error.ValidationException;
 
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 @RestControllerAdvice(assignableTypes = {FilmController.class, UserController.class})
 public class ErrorHandler {
@@ -15,6 +16,12 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, String> handleValidationException(final ValidationException e) {
         return Map.of("error", "ValidationException", "errorMessage", e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Map<String, String> handleNoSuchElementException(final NoSuchElementException e) {
+        return Map.of("error", "NoSuchElementException", "errorMessage", e.getMessage());
     }
 
     @ExceptionHandler

@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.error.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
@@ -13,14 +14,14 @@ import java.util.List;
 @Slf4j
 public class UserService {
 
-    private UserStorage userStorage;
+    private UserStorage userDao;
 
-    public UserService(@Autowired UserStorage userStorage) {
-        this.userStorage = userStorage;
+    public UserService(@Qualifier("userDbStorage") @Autowired UserStorage userDao) {
+        this.userDao = userDao;
     }
 
     public User getUser(long userId) {
-        User user = userStorage.getUser(userId);
+        User user = userDao.getUser(userId);
         if (user == null) {
             throw new IllegalArgumentException("Пользователь с id " + userId + " не найден");
         }
@@ -28,7 +29,7 @@ public class UserService {
     }
 
     public List<User> getUsers() {
-        return userStorage.getUsers();
+        return userDao.getUsers();
     }
 
     public User add(User user) {
@@ -36,7 +37,7 @@ public class UserService {
             throw new ValidationException("Пользователь с id " + user.getId() + " не прошел превалидацию");
         }
 
-        return userStorage.add(user);
+        return userDao.add(user);
     }
 
     public User update(User user) {
@@ -45,11 +46,11 @@ public class UserService {
             throw new ValidationException("Пользователь с id " + user.getId() + " не прошел превалидацию");
         }
 
-        if (userStorage.getUser(user.getId()) == null) {
+        if (userDao.getUser(user.getId()) == null) {
             throw new IllegalArgumentException("Пользователь с id " + user.getId() + " не найден");
         }
 
-        return userStorage.update(user);
+        return userDao.update(user);
 
     }
 
@@ -59,67 +60,67 @@ public class UserService {
             throw new ValidationException("Пользователь с id " + user.getId() + " не прошел превалидацию");
         }
 
-        if (userStorage.getUser(user.getId()) == null) {
+        if (userDao.getUser(user.getId()) == null) {
             throw new IllegalArgumentException("Пользователь с id " + user.getId() + " не найден");
         }
 
-        return userStorage.delete(user);
+        return userDao.delete(user);
 
     }
 
     public void addFriend(long userId, long friendId) {
 
-        User user = userStorage.getUser(userId);
+        User user = userDao.getUser(userId);
         if (user == null) {
             log.info("В базе нет пользователя с id " + userId);
             throw new IllegalArgumentException("Пользователь с id " + userId + " не найден");
         }
-        User friend = userStorage.getUser(friendId);
+        User friend = userDao.getUser(friendId);
         if (friend == null) {
             log.info("В базе нет пользователя с id " + friendId);
             throw new IllegalArgumentException("Пользователь с id " + friendId + " не найден");
         }
 
-        userStorage.addFriend(user, friendId);
+        userDao.addFriend(user, friendId);
     }
 
     public void deleteFriend(long userId, long friendId) {
-        User user = userStorage.getUser(userId);
+        User user = userDao.getUser(userId);
         if (user == null) {
             log.info("В базе нет пользователя с id " + userId);
             throw new IllegalArgumentException("Пользователь с id " + userId + " не найден");
         }
-        User friend = userStorage.getUser(friendId);
+        User friend = userDao.getUser(friendId);
         if (friend == null) {
             log.info("В базе нет пользователя с id " + friendId);
             throw new IllegalArgumentException("Пользователь с id " + friendId + " не найден");
         }
 
-        userStorage.deleteFriend(user, friendId);
+        userDao.deleteFriend(user, friendId);
     }
 
     public List<User> getUserFriends(long userId) {
-        User user = userStorage.getUser(userId);
+        User user = userDao.getUser(userId);
         if (user == null) {
             log.info("В базе нет пользователя с id " + userId);
             throw new IllegalArgumentException("Пользователь с id " + userId + " не найден");
         }
-        List<User> friends = userStorage.getUserFriends(user);
+        List<User> friends = userDao.getUserFriends(user);
         return friends;
     }
 
     public List<User> getCommonFriends(long userId, long friendId) {
-        User user = userStorage.getUser(userId);
+        User user = userDao.getUser(userId);
         if (user == null) {
             log.info("В базе нет пользователя с id " + userId);
             throw new IllegalArgumentException("Пользователь с id " + userId + " не найден");
         }
-        User friend = userStorage.getUser(friendId);
+        User friend = userDao.getUser(friendId);
         if (friend == null) {
             log.info("В базе нет пользователя с id " + friendId);
             throw new IllegalArgumentException("Пользователь с id " + friendId + " не найден");
         }
-        return userStorage.getCommonFriends(user, friend);
+        return userDao.getCommonFriends(user, friend);
     }
 
 }

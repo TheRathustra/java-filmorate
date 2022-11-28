@@ -5,7 +5,9 @@ import lombok.Data;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Positive;
 import java.time.LocalDate;
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Data
@@ -18,6 +20,18 @@ public class Film {
     private LocalDate releaseDate;
     @Positive
     private int duration;
-    private Set<Long> likes = new HashSet<>();
+    private MPA mpa;
+    private List<Genre> genres;
+
+    public Map<String, Object> toMap() {
+        Map<String, Object> values = new HashMap<>();
+        values.put("id", id);
+        values.put("name", name);
+        values.put("description", description);
+        values.put("releaseDate", releaseDate);
+        values.put("duration", duration);
+        values.put("mpa", mpa);
+        return values;
+    }
 
 }
