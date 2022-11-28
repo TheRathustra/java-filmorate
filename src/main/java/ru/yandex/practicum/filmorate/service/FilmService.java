@@ -84,10 +84,6 @@ public class FilmService {
             throw new IllegalArgumentException("Фильм с id " + filmId + " не найден");
         }
 
-        if (!film.getLikes().contains(userId)) {
-            throw new IllegalArgumentException("у фильма с id " + filmId + " нет лайка от " + userId);
-        }
-
         try {
             filmStorage.deleteLike(film, userId);
         } catch (EmptyResultDataAccessException e) {
@@ -97,10 +93,7 @@ public class FilmService {
     }
 
     public List<Film> getPopularFilms(int count) {
-        List<Film> films = filmStorage.getFilms().stream()
-                .sorted(((o1, o2) -> o2.getLikes().size() - o1.getLikes().size()))
-                .limit(count).collect(Collectors.toList());
-        return films;
+        return filmStorage.getPopularFilms(count);
     }
 
     public MPA getMpaByID(long id) {

@@ -30,4 +30,6 @@ public interface FilmStorage {
 
     Genre getGenre(long id);
 
+    List<Film> getPopularFilms(int count);
+
 }

@@ -21,7 +21,6 @@ public class Film {
     @Positive
     private int duration;
     private MPA mpa;
-    private Set<Long> likes;
     private List<Genre> genres;
 
     public Map<String, Object> toMap() {
