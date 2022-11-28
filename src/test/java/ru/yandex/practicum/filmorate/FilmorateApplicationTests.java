@@ -24,7 +24,6 @@ import java.util.List;
 @Sql({"classpath:schema.sql", "classpath:data.sql", "classpath:tests.sql"})
 class FilmorateApplicationTests {
 
-	private JdbcTemplate jdbcTemplate;
 	private final UserDbStorage userStorage;
 	private final FilmDbStorage filmStorage;
 
@@ -187,9 +186,7 @@ class FilmorateApplicationTests {
 		Film film = filmStorage.getFilm(id);
 		long userId = 2;
 		filmStorage.addLike(film, userId);
-
-		Film dbFilm = filmStorage.getFilm(id);
-		boolean likeAdded = dbFilm.getLikes().contains(userId);
+		boolean likeAdded = filmStorage.getLikes(film).contains(userId);
 		Assertions.assertTrue(likeAdded);
 	}
 
@@ -201,8 +198,8 @@ class FilmorateApplicationTests {
 		filmStorage.addLike(film, userId);
 		filmStorage.deleteLike(film, userId);
 
-		Film dbFilm = filmStorage.getFilm(id);
-		boolean likeAdded = dbFilm.getLikes().contains(userId);
+		boolean likeAdded = filmStorage.getLikes(film).contains(userId);
+
 		Assertions.assertFalse(likeAdded);
 	}
 

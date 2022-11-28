@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.storage.DAO;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -178,6 +179,17 @@ public class FilmDbStorage implements FilmStorage {
 
         String sqlQuery = "DELETE FROM likes WHERE film_id=? and user_id=?";
         jdbcTemplate.update(sqlQuery, film.getId(), userId);
+    }
+
+    @Override
+    public List<Long> getLikes(Film film) {
+        String sqlQuery = "SELECT USER_ID FROM likes WHERE film_id=?";
+        return jdbcTemplate.query(sqlQuery, new Object[]{film.getId()}, new RowMapper<Long>() {
+            @Override
+            public Long mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return rs.getLong("USER_ID");
+            }
+        });
     }
 
     @Override
