@@ -23,5 +23,5 @@ public interface UserStorage {
     List<User> getUserFriends(User user);
 
     List<User> getCommonFriends(User user, User friend);
-    
+
 }

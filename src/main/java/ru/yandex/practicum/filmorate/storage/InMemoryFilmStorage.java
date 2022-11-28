@@ -61,6 +61,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     public void deleteLike(Film film, long userId) {
         film.getLikes().remove(userId);
     }
+
     @Override
     public List<MPA> getMPA() {
         return null;

@@ -22,7 +22,8 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public User getUser(long id) {
-        return jdbcTemplate.query("SELECT * FROM Users where id=?", new Object[]{id}, new BeanPropertyRowMapper<>(User.class)).stream().findAny().orElse(null);
+        return jdbcTemplate.query("SELECT * FROM Users where id=?", new Object[]{id},
+                new BeanPropertyRowMapper<>(User.class)).stream().findAny().orElse(null);
     }
 
     @Override
@@ -87,9 +88,11 @@ public class UserDbStorage implements UserStorage {
 
         String sqlQuery = "SELECT * FROM USERS as u where u.ID in (\n" +
                 "select userFriends.FRIEND_ID from FRIENDS as userFriends\n" +
-                "  inner join (select f.FRIEND_ID from FRIENDS as f where f.USER_ID = ?) as friendFriends on userFriends.FRIEND_ID = friendFriends.FRIEND_ID\n" +
+                "  inner join (select f.FRIEND_ID from FRIENDS as f where f.USER_ID = ?) " +
+                "as friendFriends on userFriends.FRIEND_ID = friendFriends.FRIEND_ID\n" +
                 "                 where userFriends.USER_ID = ?)";
-        return jdbcTemplate.query(sqlQuery, new Object[]{friend.getId(), user.getId()}, new BeanPropertyRowMapper<>(User.class));
+        return jdbcTemplate.query(sqlQuery, new Object[]{friend.getId(), user.getId()},
+                new BeanPropertyRowMapper<>(User.class));
     }
 }
 

@@ -73,7 +73,7 @@ public class FilmService {
     public void addLike(long filmId, long userId) {
         Film film = filmStorage.getFilm(filmId);
         if (film == null) {
-            throw new IllegalArgumentException("Фильм с id " + filmId+ " не найден");
+            throw new IllegalArgumentException("Фильм с id " + filmId + " не найден");
         }
         filmStorage.addLike(film, userId);
     }

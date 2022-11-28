@@ -1,7 +1,7 @@
 package ru.yandex.practicum.filmorate.storage.DAO;
 
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -21,7 +21,6 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -38,11 +37,13 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film getFilm(long filmId) {
-        String sqlQuery = "SELECT f.ID, f.NAME, f.DESCRIPTION, f.RELEASEDATE, f.DURATION, m.ID as mpa_id, m.NAME as mpa_name FROM FILM as f\n" +
+        String sqlQuery = "SELECT f.ID, f.NAME, f.DESCRIPTION, f.RELEASEDATE, f.DURATION, m.ID as mpa_id, " +
+                "m.NAME as mpa_name FROM FILM as f\n" +
                 "left join MPA M on M.ID = f.MPA\n" +
                 "where f.ID = ?";
 
-        Film film = jdbcTemplate.query(sqlQuery, new Object[]{filmId}, new FilmMapper()).stream().findAny().orElse(null);
+        Film film = jdbcTemplate.query(sqlQuery, new Object[]{filmId},
+                new FilmMapper()).stream().findAny().orElse(null);
 
         if (film == null) {
             return film;
@@ -67,7 +68,8 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public List<Film> getFilms() {
-        String sqlQuery = "SELECT f.ID, f.NAME, f.DESCRIPTION, f.RELEASEDATE, f.DURATION, m.ID as mpa_id, m.NAME as mpa_name FROM FILM as f\n" +
+        String sqlQuery = "SELECT f.ID, f.NAME, f.DESCRIPTION, f.RELEASEDATE, f.DURATION, m.ID as mpa_id, " +
+                "m.NAME as mpa_name FROM FILM as f\n" +
                 "left join MPA M on M.ID = f.MPA";
         List<Film> films = jdbcTemplate.query(sqlQuery, new FilmMapper());
 
@@ -101,9 +103,9 @@ public class FilmDbStorage implements FilmStorage {
             PreparedStatement stmt = connection.prepareStatement(sqlQuery, new String[]{"id"});
             stmt.setString(1, film.getName());
             stmt.setString(2, film.getDescription());
-            stmt.setDate(3,   Date.valueOf(film.getReleaseDate()));
-            stmt.setInt(4,   film.getDuration());
-            stmt.setInt(5,   film.getMpa().getId());
+            stmt.setDate(3, Date.valueOf(film.getReleaseDate()));
+            stmt.setInt(4, film.getDuration());
+            stmt.setInt(5, film.getMpa().getId());
             return stmt;
         }, keyHolder);
         long id = keyHolder.getKey().longValue();
@@ -111,9 +113,19 @@ public class FilmDbStorage implements FilmStorage {
 
         if (film.getGenres() != null && !film.getGenres().isEmpty()) {
             String sqlQueryGenre = "INSERT INTO FILM_GENRE(FILM_ID, GENRE_ID) VALUES (?,?)";
-            for (Genre genre : film.getGenres()) {
-                jdbcTemplate.update(sqlQueryGenre, film.getId(), genre.getId());
-            }
+            List<Genre> genres = film.getGenres();
+            jdbcTemplate.batchUpdate(sqlQueryGenre, new BatchPreparedStatementSetter() {
+                @Override
+                public void setValues(PreparedStatement ps, int i) throws SQLException {
+                    ps.setLong(1, id);
+                    ps.setLong(2, genres.get(i).getId());
+                }
+
+                @Override
+                public int getBatchSize() {
+                    return genres.size();
+                }
+            });
         }
 
         return film;
@@ -135,9 +147,18 @@ public class FilmDbStorage implements FilmStorage {
             sqlQuery = "INSERT INTO FILM_GENRE(FILM_ID, GENRE_ID) VALUES (?,?)";
             List<Genre> genres = film.getGenres().stream().distinct().collect(Collectors.toList());
             film.setGenres(genres);
-            for (Genre genre : genres) {
-                jdbcTemplate.update(sqlQuery, film.getId(), genre.getId());
-            }
+            jdbcTemplate.batchUpdate(sqlQuery, new BatchPreparedStatementSetter() {
+                @Override
+                public void setValues(PreparedStatement ps, int i) throws SQLException {
+                    ps.setLong(1, film.getId());
+                    ps.setLong(2, genres.get(i).getId());
+                }
+
+                @Override
+                public int getBatchSize() {
+                    return genres.size();
+                }
+            });
         }
         return film;
     }
@@ -160,14 +181,15 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public void deleteLike(Film film, long userId) {
-        User user = jdbcTemplate.query("SELECT * FROM Users where id=?", new Object[]{userId}, new RowMapper<User>() {
-            @Override
-            public User mapRow(ResultSet rs, int rowNum) throws SQLException {
-                User userFromDB = new User();
-                userFromDB.setId(rs.getInt("id"));
-                return userFromDB;
-            }
-        }).stream().findAny().orElse(null);
+        User user = jdbcTemplate.query("SELECT * FROM Users where id=?",
+                new Object[]{userId}, new RowMapper<User>() {
+                    @Override
+                    public User mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        User userFromDB = new User();
+                        userFromDB.setId(rs.getInt("id"));
+                        return userFromDB;
+                    }
+                }).stream().findAny().orElse(null);
 
         if (user == null) {
             throw new EmptyResultDataAccessException(1);
@@ -180,7 +202,8 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public MPA getMpaByID(long id) {
         String sqlQuery = "SELECT * FROM MPA where ID=?";
-        MPA mpa = jdbcTemplate.query(sqlQuery, new Object[]{id},new MpaMapper()).stream().findAny().orElse(null);
+        MPA mpa = jdbcTemplate.query(sqlQuery, new Object[]{id},
+                new MpaMapper()).stream().findAny().orElse(null);
         return mpa;
     }
 
@@ -202,7 +225,8 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public Genre getGenre(long id) {
         String sqlQuery = "SELECT * FROM GENRE where ID=?";
-        Genre genre = jdbcTemplate.query(sqlQuery, new Object[]{id}, new GenreMapper()).stream().findAny().orElse(null);
+        Genre genre = jdbcTemplate.query(sqlQuery, new Object[]{id},
+                new GenreMapper()).stream().findAny().orElse(null);
         return genre;
     }
 }

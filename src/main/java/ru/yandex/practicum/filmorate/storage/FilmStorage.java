@@ -23,8 +23,11 @@ public interface FilmStorage {
     void deleteLike(Film film, long userId);
 
     MPA getMpaByID(long id);
+
     List<MPA> getMPA();
+
     List<Genre> getGenres();
+
     Genre getGenre(long id);
 
 }

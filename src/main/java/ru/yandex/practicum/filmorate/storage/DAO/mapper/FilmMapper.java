@@ -4,11 +4,8 @@ import org.springframework.jdbc.core.RowMapper;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.MPA;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Positive;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
 
 public class FilmMapper implements RowMapper<Film> {
     @Override
